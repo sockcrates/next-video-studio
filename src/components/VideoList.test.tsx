@@ -1,7 +1,7 @@
 import { faker } from "@faker-js/faker";
 import { render } from "@testing-library/react";
 import React from "react";
-import { byRole } from "testing-library-selector";
+import { byRole, byText } from "testing-library-selector";
 import { describe, expect, it } from "vitest";
 import { VideoList, type VideoListProps } from "./VideoList";
 
@@ -21,6 +21,7 @@ function renderComponent(opts: Partial<VideoListProps> = {}) {
 }
 
 const ui = {
+  emptyIndicator: byText(/No videos available/),
   videoList: byRole("complementary", { name: "Videos" }),
 };
 
@@ -29,5 +30,11 @@ describe("VideoList", () => {
     renderComponent();
 
     expect(ui.videoList.get()).toBeVisible();
+    expect(ui.emptyIndicator.query()).not.toBeInTheDocument();
+  });
+  it("renders an empty state", () => {
+    renderComponent({ videos: [] });
+
+    expect(ui.emptyIndicator.get()).toBeVisible();
   });
 });

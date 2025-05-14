@@ -8,17 +8,22 @@ export interface VideoListProps {
 
 export function VideoList({ videos }: VideoListProps) {
   const headingId = useId();
+  const isEmpty = !videos.length;
   return (
     <aside aria-labelledby={headingId}>
       <p id={headingId}>Videos</p>
-      <ul>
-        {videos.map((video) => (
-          <li key={video.id.videoId}>
-            <p>{video.snippet.title}</p>
-            <p>{video.snippet.description}</p>
-          </li>
-        ))}
-      </ul>
+      {isEmpty ? (
+        <p>❌ No videos available 🤷‍♂️</p>
+      ) : (
+        <ul>
+          {videos.map((video) => (
+            <li key={video.id.videoId}>
+              <p>{video.snippet.title}</p>
+              <p>{video.snippet.description}</p>
+            </li>
+          ))}
+        </ul>
+      )}
     </aside>
   );
 }
