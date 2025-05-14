@@ -42,7 +42,6 @@ describe("useDebounce", () => {
       result.current("c");
     });
 
-    // Wait full 100ms *after* last call
     act(() => {
       vi.advanceTimersByTime(100);
     });

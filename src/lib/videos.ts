@@ -16,16 +16,32 @@ export interface Video {
 export async function getVideos({
   page = 1,
   pageSize = DEFAULT_PAGE_SIZE,
+  query = "",
 }: Partial<{
   page: number;
   pageSize: number;
+  query: string;
 }> = {}): Promise<{
   pageCount: number;
   videos: Video[];
 }> {
   const videos = data.items.filter((item) => item.id.kind === "youtube#video");
-  const pageCount = pageSize > 0 ? Math.ceil(videos.length / pageSize) : 0;
-  const paginatedVideos = videos.slice((page - 1) * pageSize, page * pageSize);
+  let filteredVideos = videos;
+
+  if (query) {
+    filteredVideos = videos.filter((video) =>
+      video.snippet.title.toLowerCase().includes(query.toLowerCase()),
+    );
+  }
+
+  const pageCount =
+    pageSize > 0 ? Math.ceil(filteredVideos.length / pageSize) : 0;
+
+  const paginatedVideos = filteredVideos.slice(
+    (page - 1) * pageSize,
+    page * pageSize,
+  );
+
   return Promise.resolve({
     pageCount,
     videos: paginatedVideos as Video[],

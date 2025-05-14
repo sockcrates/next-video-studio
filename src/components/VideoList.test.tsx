@@ -1,3 +1,4 @@
+import userEvent from "@testing-library/user-event";
 import { faker } from "@faker-js/faker";
 import { render } from "@testing-library/react";
 import React from "react";
@@ -29,7 +30,11 @@ function getMockVideo() {
 function renderComponent(opts: Partial<VideoListProps> = {}) {
   const pageCount = opts.pageCount ?? 1;
   const videos = opts.videos ?? Array.from({ length: 3 }, getMockVideo);
-  return render(<VideoList pageCount={pageCount} videos={videos} />);
+  const user = userEvent.setup();
+  return {
+    ...render(<VideoList pageCount={pageCount} videos={videos} />),
+    user,
+  };
 }
 
 const ui = {
@@ -37,6 +42,7 @@ const ui = {
   emptyIndicator: byText(/No videos available/),
   nextButton: byRole("button", { name: "Next" }),
   pageCounter: byText(/Page \d of \d/),
+  searchBar: byRole("textbox", { name: "Search videos" }),
   videoList: byRole("complementary", { name: "Videos" }),
 };
 
@@ -60,5 +66,24 @@ describe("VideoList", () => {
     expect(ui.previousButton.get()).toBeDisabled();
     expect(ui.nextButton.get()).toBeVisible();
     expect(ui.nextButton.get()).not.toBeDisabled();
+  });
+  describe("user interaction", () => {
+    it("allows video search", async () => {
+      const query = "never gonna give you up";
+      mockSearchParams.set("query", query);
+      const { user } = renderComponent();
+
+      expect(ui.searchBar.get()).toHaveValue(query);
+
+      await user.clear(ui.searchBar.get());
+
+      expect(ui.searchBar.get()).toHaveValue("");
+
+      const otherQuery = "never gonna let you down";
+      await user.type(ui.searchBar.get(), otherQuery);
+
+      expect(ui.searchBar.get()).toHaveValue(otherQuery);
+      expect(ui.searchBar.get()).not.toHaveValue(query);
+    });
   });
 });
