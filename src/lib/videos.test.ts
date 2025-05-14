@@ -31,4 +31,19 @@ describe("getVideos", () => {
     expect(d).toEqual(0);
     expect(e).toEqual(49);
   });
+  it("returns pages based on number", async () => {
+    const pageSize = 5;
+    const { videos: a } = await getVideos({ page: 1, pageSize });
+    const { videos: b } = await getVideos({ page: 2, pageSize });
+
+    for (const element of a) {
+      expect(b).not.toContain(element);
+    }
+
+    const { videos: c } = await getVideos({ page: 1, pageSize });
+
+    for (const element of c) {
+      expect(a).toContain(element);
+    }
+  });
 });

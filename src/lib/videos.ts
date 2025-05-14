@@ -25,8 +25,9 @@ export async function getVideos({
 }> {
   const videos = data.items.filter((item) => item.id.kind === "youtube#video");
   const pageCount = pageSize > 0 ? Math.ceil(videos.length / pageSize) : 0;
+  const paginatedVideos = videos.slice((page - 1) * pageSize, page * pageSize);
   return Promise.resolve({
     pageCount,
-    videos: videos as Video[],
+    videos: paginatedVideos as Video[],
   });
 }
