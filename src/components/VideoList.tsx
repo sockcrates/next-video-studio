@@ -1,5 +1,5 @@
 "use client";
-import { Button } from "@/components/Button";
+import { Button } from "@/components";
 import type { Video } from "@/lib/videos";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import React, { useCallback, useId } from "react";
