@@ -1,1 +1,1 @@
-export { getVideos, type Video } from "./videos";
+export { getVideos, getVideoById, type Video } from "./videos";

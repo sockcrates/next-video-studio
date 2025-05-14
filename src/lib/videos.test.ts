@@ -46,6 +46,27 @@ describe("getVideos", () => {
       expect(a).toContain(element);
     }
   });
+  it("queries by video name", async () => {
+    const { videos: a } = await getVideos({ query: "Bali" });
+
+    expect(a).toHaveLength(1);
+
+    const { videos: b } = await getVideos({ query: "wave" });
+
+    expect(b).toHaveLength(10);
+
+    const { videos: c } = await getVideos({
+      query: "this video doesn't exist",
+    });
+
+    expect(c).toHaveLength(0);
+
+    const { videos: d } = await getVideos({
+      query: "",
+    });
+
+    expect(d).toHaveLength(10);
+  });
 });
 
 describe("getVideoById", () => {
