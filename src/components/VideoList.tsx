@@ -2,6 +2,7 @@
 import { Button } from "@/components";
 import { useDebounce } from "@/hooks";
 import type { Video } from "@/lib/videos";
+import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import React, { type ChangeEvent, useCallback, useId } from "react";
 
@@ -73,8 +74,13 @@ export function VideoList({ pageCount, videos }: VideoListProps) {
         <ul>
           {videos.map((video) => (
             <li key={video.id.videoId}>
-              <p>{video.snippet.title}</p>
-              <p>{video.snippet.description}</p>
+              <Link
+                href={`/videos/${video.id.videoId}?${searchParams.toString()}`}
+                shallow
+              >
+                <p>{video.snippet.title}</p>
+                <p>{video.snippet.description}</p>
+              </Link>
             </li>
           ))}
         </ul>
