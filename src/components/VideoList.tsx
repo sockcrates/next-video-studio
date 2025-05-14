@@ -1,6 +1,6 @@
 "use client";
 import { Button } from "@/components";
-import { useDebounce } from "@/hooks/useDebounce";
+import { useDebounce } from "@/hooks";
 import type { Video } from "@/lib/videos";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import React, { type ChangeEvent, useCallback, useId } from "react";
