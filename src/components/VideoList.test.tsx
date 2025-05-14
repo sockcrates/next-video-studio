@@ -1,6 +1,6 @@
-import userEvent from "@testing-library/user-event";
 import { faker } from "@faker-js/faker";
 import { render } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import React from "react";
 import { byRole, byText } from "testing-library-selector";
 import { describe, expect, it, vi } from "vitest";
@@ -57,6 +57,20 @@ describe("VideoList", () => {
     renderComponent({ videos: [] });
 
     expect(ui.emptyIndicator.get()).toBeVisible();
+  });
+  it("doesn't render page switch ui if there are no pages", () => {
+    renderComponent({ pageCount: 0 });
+
+    expect(ui.pageCounter.query()).not.toBeInTheDocument();
+    expect(ui.previousButton.query()).not.toBeInTheDocument();
+    expect(ui.nextButton.query()).not.toBeInTheDocument();
+  });
+  it("doesn't render page switch ui if there is only one page", () => {
+    renderComponent({ pageCount: 1 });
+
+    expect(ui.pageCounter.query()).not.toBeInTheDocument();
+    expect(ui.previousButton.query()).not.toBeInTheDocument();
+    expect(ui.nextButton.query()).not.toBeInTheDocument();
   });
   it("has buttons to switch pages", () => {
     renderComponent({ pageCount: 5 });
