@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { getVideos } from "./videos";
+import { getVideoById, getVideos } from "./videos";
 
 describe("getVideos", () => {
   it("returns a list of videos", async () => {
@@ -45,5 +45,22 @@ describe("getVideos", () => {
     for (const element of c) {
       expect(a).toContain(element);
     }
+  });
+});
+
+describe("getVideoById", () => {
+  it("returns a video if it exists", async () => {
+    const result = await getVideoById("1QKtt6CTf_I");
+
+    expect(result).toMatchObject({
+      id: {
+        videoId: expect.any(String),
+      },
+    });
+  });
+  it("returns null if no video with such id exists", async () => {
+    const result = await getVideoById("there's no video with this id");
+
+    expect(result).toBeNull();
   });
 });

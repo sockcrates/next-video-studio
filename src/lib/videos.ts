@@ -47,3 +47,12 @@ export async function getVideos({
     videos: paginatedVideos as Video[],
   });
 }
+
+export async function getVideoById(id: string): Promise<Video | null> {
+  const videos = data.items.filter((item) => item.id.kind === "youtube#video");
+  const video = videos.find((video) => video.id.videoId === id);
+  if (!video) {
+    return null;
+  }
+  return Promise.resolve(video as Video);
+}
