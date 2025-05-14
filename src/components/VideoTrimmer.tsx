@@ -2,7 +2,8 @@
 import { Button } from "@/components/Button";
 import { useDebounce } from "@/hooks";
 import type { Video } from "@/lib";
-import React, { use, useCallback, useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
+import { TrimBar } from "./TrimBar";
 
 interface VideoTrimmerProps {
   video: Video;
@@ -105,11 +106,17 @@ export function VideoTrimmer({ video }: VideoTrimmerProps) {
   return (
     <div>
       <video ref={videoRef}>
-        <source src="" type="video/mp4" />
-        <source src="" type="video/webm" />
-        <track default kind="captions" src="" srcLang="en" />
+        <source src={video.id.videoId} type="video/mp4" />
+        <source src={video.id.videoId} type="video/webm" />
+        <track default kind="captions" src={video.id.videoId} srcLang="en" />
       </video>
       <Button>Play</Button>
+      <TrimBar
+        onTrimEndChange={handleTrimEndChange}
+        onTrimStartChange={handleTrimStartChange}
+        trimEnd={trimEnd}
+        trimStart={trimStart}
+      />
     </div>
   );
 }

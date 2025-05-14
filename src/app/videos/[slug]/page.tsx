@@ -28,9 +28,13 @@ export default async function VideoTrimmerPage(props: {
   const { pageCount, videos } = await getVideos({ page, query });
 
   return (
-    <div>
-      <VideoList pageCount={pageCount} videos={videos} />
-      <VideoTrimmer video={video} />
+    <div className="grid grid-cols-1 md:grid-cols-[35%_60%] md:gap-x-8 h-full w-full">
+      <div className="p-6 w-full order-2 md:order-1">
+        <VideoList pageCount={pageCount} videos={videos} />
+      </div>
+      <div className="p-8 max-h-100 w-full order-1 md:order-2">
+        <VideoTrimmer video={video} />
+      </div>
     </div>
   );
 }
