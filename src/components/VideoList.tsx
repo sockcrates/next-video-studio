@@ -78,7 +78,7 @@ export function VideoList({
         />
       </div>
       {isEmpty ? (
-        <p>❌ No videos available 🤷‍♂️</p>
+        <p className="text-center">❌ No videos available 🤷‍♂️</p>
       ) : (
         <ul>
           {videos.map((video) => (
