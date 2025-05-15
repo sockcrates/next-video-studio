@@ -73,7 +73,7 @@ export function TrimBar({
   );
 
   return (
-    <div className="w-full min-w-64 min-h-10">
+    <div className="w-full min-w-48 min-h-10">
       <div ref={trimBarRef} className="relative h-10 mt-4">
         <div aria-hidden className="absolute w-full h-8 bg-gray-300 rounded-md">
           <div

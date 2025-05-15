@@ -36,7 +36,7 @@ export default async function VideoTrimmerPage(props: {
           videos={videos}
         />
       </div>
-      <div className="p-8 max-h-100 w-full order-1 md:order-2">
+      <div className="p-8 max-h-150 w-full order-1 md:order-2">
         <VideoTrimmer video={video} />
       </div>
     </div>
