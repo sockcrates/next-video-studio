@@ -78,28 +78,6 @@ export function VideoList({
     [getVideos, query],
   );
 
-  const pageCounterAndControlButtons = (
-    <div className="flex justify-between">
-      <Button
-        disabled={page === 1}
-        onClick={handlePreviousPageClick}
-        type="button"
-      >
-        Previous
-      </Button>
-      <span className="p-2 text-center">
-        Page {page} of {pageCount || 1}
-      </span>
-      <Button
-        disabled={page === pageCount}
-        onClick={handleNextPageClick}
-        type="button"
-      >
-        Next
-      </Button>
-    </div>
-  );
-
   const isEmpty = !videos.length;
 
   return (
@@ -107,7 +85,7 @@ export function VideoList({
       <p className="text-center text-4xl my-4" id={headingId}>
         Videos
       </p>
-      <div className="my-4">
+      <div className="my-6 sticky bg-black py-4 top-0">
         <label className="text-lg" htmlFor={searchInputId}>
           Search videos
         </label>
@@ -142,7 +120,25 @@ export function VideoList({
             ))}
           </select>
         </div>
-        <div className="my-4">{pageCounterAndControlButtons}</div>
+        <div className="flex justify-between">
+          <Button
+            disabled={page === 1}
+            onClick={handlePreviousPageClick}
+            type="button"
+          >
+            Previous
+          </Button>
+          <span className="p-2 text-center">
+            Page {page} of {pageCount || 1}
+          </span>
+          <Button
+            disabled={page === pageCount}
+            onClick={handleNextPageClick}
+            type="button"
+          >
+            Next
+          </Button>
+        </div>
       </div>
       {isEmpty ? (
         <output className="text-center">❌ No videos available </output>
@@ -175,7 +171,6 @@ export function VideoList({
           ))}
         </ul>
       )}
-      {pageCounterAndControlButtons}
     </aside>
   );
 }
