@@ -30,8 +30,8 @@ export default async function VideoTrimmerPage(props: {
   const { pageCount, videos } = await getVideos({ page, query });
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-[35%_60%] md:gap-x-4 lg:gap-x-8 h-full w-full">
-      <div className="ml-auto p-6 w-full md:max-w-150 order-2 md:order-1">
+    <div className="grid grid-cols-1 md:grid-cols-[40%_60%] h-full w-full">
+      <div className="ml-auto w-full md:max-w-150 order-2 md:order-1">
         <Suspense fallback={<VideoListSkeleton />} key={page + query}>
           <VideoList
             pageCount={pageCount}

@@ -115,8 +115,8 @@ export function VideoTrimmer({ video }: VideoTrimmerProps) {
 
   return (
     <div className="flex flex-col w-full h-full justify-center items-center">
-      <div className="max-w-[1200px] max-h-[1000px] aspect-video w-full h-full mb-4">
-        <div className="w-full h-full bg-gray-200 rounded-lg overflow-hidden">
+      <div className="max-w-[1200px] max-h-[1000px] w-full h-full mb-4">
+        <div className="aspect-video bg-gray-200 rounded-lg overflow-hidden">
           <video ref={videoRef}>
             <source src={video.id.videoId} type="video/mp4" />
             <source src={video.id.videoId} type="video/webm" />
