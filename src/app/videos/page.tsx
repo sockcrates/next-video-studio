@@ -1,5 +1,7 @@
 import { VideoList } from "@/components";
+import { VideoListSkeleton } from "@/components/VideoListSkeleton";
 import { getVideos } from "@/lib";
+import { Suspense } from "react";
 
 export default async function VideoListPage(props: {
   searchParams: Promise<
@@ -15,5 +17,9 @@ export default async function VideoListPage(props: {
 
   const { pageCount, videos } = await getVideos({ page, query });
 
-  return <VideoList pageCount={pageCount} videos={videos} />;
+  return (
+    <Suspense fallback={<VideoListSkeleton />} key={page + query}>
+      <VideoList pageCount={pageCount} videos={videos} />
+    </Suspense>
+  );
 }
