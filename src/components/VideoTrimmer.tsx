@@ -133,6 +133,7 @@ export function VideoTrimmer({ video }: VideoTrimmerProps) {
             className="mr-4"
             disabled={!videoRef.current}
             onClick={togglePlayPause}
+            type="button"
           >
             {isPlaying ? "Pause" : "Play"}
           </Button>
