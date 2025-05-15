@@ -91,7 +91,7 @@ export function VideoList({
         </label>
         <div className="flex justify-between">
           <input
-            className="outline p-2 rounded-md mr-3 w-full focus:outline-purple-700 dark:focus:outline-purple-400"
+            className="outline p-2 rounded-md mr-3 w-full focus:outline-2 focus:outline-purple-600 dark:focus:outline-purple-400"
             defaultValue={query}
             id={searchInputId}
             onChange={debouncedSearch}
@@ -110,7 +110,7 @@ export function VideoList({
             Jump to page:
           </label>
           <select
-            className="outline p-2 rounded-md focus:outline-purple-700 dark:focus:outline-purple-400"
+            className="outline p-2 rounded-md focus:outline-2 focus:outline-purple-600 dark:focus:outline-purple-400"
             disabled={pageCount <= 1}
             defaultValue={page}
             id={pageSelectorId}
@@ -118,7 +118,9 @@ export function VideoList({
           >
             {Array.from({ length: pageCount }, (_, idx) => (
               // biome-ignore lint/suspicious/noArrayIndexKey: elements are always the same
-              <option key={idx}>{idx + 1}</option>
+              <option className="dark:bg-gray-900 dark:text-white" key={idx}>
+                {idx + 1}
+              </option>
             ))}
           </select>
         </div>
