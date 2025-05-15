@@ -1,5 +1,5 @@
 "use client";
-import { Button } from "@/components";
+import { Button, Paper } from "@/components";
 import { useDebounce } from "@/hooks";
 import type { Video } from "@/lib/videos";
 import classNames from "classnames";
@@ -85,13 +85,13 @@ export function VideoList({
       <p className="text-center text-4xl my-4" id={headingId}>
         Videos
       </p>
-      <div className="my-6 sticky bg-black py-4 top-0">
+      <Paper className="my-6 bg-purple-300 dark:bg-purple-900 sticky shadow-xl top-[-16px]">
         <label className="text-lg" htmlFor={searchInputId}>
           Search videos
         </label>
         <div className="flex justify-between">
           <input
-            className="border border-gray-300 p-2 rounded-md mr-3 w-full focus:outline-purple-700 focus:border-purple-500"
+            className="outline p-2 rounded-md mr-3 w-full focus:outline-purple-700 dark:focus:outline-purple-700 "
             defaultValue={query}
             id={searchInputId}
             onChange={debouncedSearch}
@@ -110,7 +110,7 @@ export function VideoList({
             Jump to page:
           </label>
           <select
-            className="border border-gray-300 p-2 rounded-md focus:outline-purple-700 focus:border-purple-500"
+            className="outline p-2 rounded-md focus:outline-purple-700 focus:border-purple-500"
             disabled={pageCount <= 1}
             defaultValue={page}
             id={pageSelectorId}
@@ -141,46 +141,51 @@ export function VideoList({
             Next
           </Button>
         </div>
-      </div>
-      {isEmpty ? (
-        <output>
-          {query ? (
-            <p className="text-center">
-              🔎 No videos available for your search
-            </p>
-          ) : (
-            <p className="text-center">❌ No videos available</p>
-          )}
-        </output>
-      ) : (
-        <ul>
-          {videos.map((video) => (
-            <li
-              className={classNames(
-                "border p-2 rounded-md my-6 h-[144px] overflow-hidden",
-                { "bg-purple-900": video.id.videoId === selectedVideoId },
-                { "border-gray-300": video.id.videoId !== selectedVideoId },
-                {
-                  "border-purple-500": video.id.videoId === selectedVideoId,
-                },
-              )}
-              key={video.id.videoId}
-            >
-              <Link
-                href={`/videos/${video.id.videoId}?${searchParams.toString()}`}
-                shallow
+      </Paper>
+      <Paper>
+        {isEmpty ? (
+          <output>
+            {query ? (
+              <p className="text-center">
+                🔎 No videos available for your search
+              </p>
+            ) : (
+              <p className="text-center">❌ No videos available</p>
+            )}
+          </output>
+        ) : (
+          <ul>
+            {videos.map((video) => (
+              <li
+                className={classNames(
+                  "border p-2 rounded-md my-6 h-[144px] overflow-hidden",
+                  {
+                    "bg-purple-300 dark:bg-purple-900":
+                      video.id.videoId === selectedVideoId,
+                  },
+                  { "border-gray-300": video.id.videoId !== selectedVideoId },
+                  {
+                    "border-purple-500": video.id.videoId === selectedVideoId,
+                  },
+                )}
+                key={video.id.videoId}
               >
-                <p className="text-l font-bold line-clamp-2 text-ellipsis">
-                  {video.snippet.title}
-                </p>
-                <p className="mt-3 line-clamp-3 text-ellipsis">
-                  {video.snippet.description}
-                </p>
-              </Link>
-            </li>
-          ))}
-        </ul>
-      )}
+                <Link
+                  href={`/videos/${video.id.videoId}?${searchParams.toString()}`}
+                  shallow
+                >
+                  <p className="text-l font-bold line-clamp-2 text-ellipsis">
+                    {video.snippet.title}
+                  </p>
+                  <p className="mt-3 line-clamp-3 text-ellipsis">
+                    {video.snippet.description}
+                  </p>
+                </Link>
+              </li>
+            ))}
+          </ul>
+        )}
+      </Paper>
     </aside>
   );
 }
