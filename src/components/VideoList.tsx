@@ -2,16 +2,22 @@
 import { Button } from "@/components";
 import { useDebounce } from "@/hooks";
 import type { Video } from "@/lib/videos";
+import classNames from "classnames";
 import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import React, { type ChangeEvent, useCallback, useId } from "react";
 
 export interface VideoListProps {
   pageCount: number;
+  selectedVideoId?: string;
   videos: Video[];
 }
 
-export function VideoList({ pageCount, videos }: VideoListProps) {
+export function VideoList({
+  pageCount,
+  selectedVideoId,
+  videos,
+}: VideoListProps) {
   const headingId = useId();
   const searchInputId = useId();
   const pathname = usePathname();
@@ -59,10 +65,13 @@ export function VideoList({ pageCount, videos }: VideoListProps) {
 
   return (
     <aside aria-labelledby={headingId}>
-      <p id={headingId}>Videos</p>
-      <div>
+      <p className="text-center text-4xl my-4" id={headingId}>
+        Videos
+      </p>
+      <div className="my-4">
         <label htmlFor={searchInputId}>Search videos</label>
         <input
+          className="border border-gray-300 p-2 rounded-md my-2 w-full focus:outline-purple-700 focus:border-purple-500"
           defaultValue={query}
           id={searchInputId}
           onChange={debouncedSearch}
@@ -73,20 +82,34 @@ export function VideoList({ pageCount, videos }: VideoListProps) {
       ) : (
         <ul>
           {videos.map((video) => (
-            <li key={video.id.videoId}>
+            <li
+              className={classNames(
+                "border p-2 rounded-md my-6 h-[144px] overflow-hidden",
+                { "bg-purple-900": video.id.videoId === selectedVideoId },
+                { "border-gray-300": video.id.videoId !== selectedVideoId },
+                {
+                  "border-purple-500": video.id.videoId === selectedVideoId,
+                },
+              )}
+              key={video.id.videoId}
+            >
               <Link
                 href={`/videos/${video.id.videoId}?${searchParams.toString()}`}
                 shallow
               >
-                <p>{video.snippet.title}</p>
-                <p>{video.snippet.description}</p>
+                <p className="text-l font-bold line-clamp-2 text-ellipsis">
+                  {video.snippet.title}
+                </p>
+                <p className="mt-3 line-clamp-3 text-ellipsis">
+                  {video.snippet.description}
+                </p>
               </Link>
             </li>
           ))}
         </ul>
       )}
       {pageCount > 1 ? (
-        <div className="flex">
+        <div className="flex justify-between">
           <Button
             disabled={page === 1}
             onClick={handlePreviousPageClick}
@@ -94,7 +117,7 @@ export function VideoList({ pageCount, videos }: VideoListProps) {
           >
             Previous
           </Button>
-          <span>
+          <span className="p-2 text-center">
             Page {page} of {pageCount}
           </span>
           <Button
