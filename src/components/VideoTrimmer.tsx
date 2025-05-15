@@ -2,14 +2,14 @@
 import { Button } from "@/components/Button";
 import { useDebounce } from "@/hooks";
 import type { Video } from "@/lib";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { memo, useCallback, useEffect, useRef, useState } from "react";
 import { TrimBar } from "./TrimBar";
 
 interface VideoTrimmerProps {
   video: Video;
 }
 
-export function VideoTrimmer({ video }: VideoTrimmerProps) {
+export const VideoTrimmer = memo(({ video }: VideoTrimmerProps) => {
   const videoRef = useRef<HTMLVideoElement>(null);
 
   const [isPlaying, setIsPlaying] = useState(false);
@@ -149,4 +149,4 @@ export function VideoTrimmer({ video }: VideoTrimmerProps) {
       </div>
     </div>
   );
-}
+});
