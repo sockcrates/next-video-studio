@@ -91,7 +91,7 @@ export function VideoList({
         </label>
         <div className="flex justify-between">
           <input
-            className="outline p-2 rounded-md mr-3 w-full focus:outline-purple-700 dark:focus:outline-purple-700 "
+            className="outline p-2 rounded-md mr-3 w-full focus:outline-purple-700 dark:focus:outline-purple-400"
             defaultValue={query}
             id={searchInputId}
             onChange={debouncedSearch}
@@ -110,7 +110,7 @@ export function VideoList({
             Jump to page:
           </label>
           <select
-            className="outline p-2 rounded-md focus:outline-purple-700 focus:border-purple-500"
+            className="outline p-2 rounded-md focus:outline-purple-700 dark:focus:outline-purple-400"
             disabled={pageCount <= 1}
             defaultValue={page}
             id={pageSelectorId}
@@ -158,14 +158,14 @@ export function VideoList({
             {videos.map((video) => (
               <li
                 className={classNames(
-                  "border p-2 rounded-md my-6 h-[144px] overflow-hidden",
+                  "p-4 [&:not(:first-child)&:not(:last-child)]:my-4 rounded-md h-[152px] overflow-hidden",
                   {
-                    "bg-purple-300 dark:bg-purple-900":
+                    "border border-purple-300 dark:border-purple-400 shadow-xl shadow-purple-300 dark:shadow-purple-500 bg-purple-400 dark:bg-purple-700 dark:shadow-purple-900":
                       video.id.videoId === selectedVideoId,
                   },
-                  { "border-gray-300": video.id.videoId !== selectedVideoId },
                   {
-                    "border-purple-500": video.id.videoId === selectedVideoId,
+                    "bg-gray-200 dark:bg-gray-600":
+                      video.id.videoId !== selectedVideoId,
                   },
                 )}
                 key={video.id.videoId}
@@ -177,7 +177,7 @@ export function VideoList({
                   <p className="text-l font-bold line-clamp-2 text-ellipsis">
                     {video.snippet.title}
                   </p>
-                  <p className="mt-3 line-clamp-3 text-ellipsis">
+                  <p className="mt-3 line-clamp-2 text-ellipsis">
                     {video.snippet.description}
                   </p>
                 </Link>
