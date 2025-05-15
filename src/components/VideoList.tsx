@@ -5,7 +5,7 @@ import type { Video } from "@/lib/videos";
 import classNames from "classnames";
 import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import React, { type ChangeEvent, useCallback, useId } from "react";
+import React, { type ChangeEvent, useCallback, useId, useRef } from "react";
 
 export interface VideoListProps {
   pageCount: number;
@@ -20,6 +20,7 @@ export function VideoList({
 }: VideoListProps) {
   const headingId = useId();
   const searchInputId = useId();
+  const searchInputRef = useRef<HTMLInputElement>(null);
   const pathname = usePathname();
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -61,6 +62,13 @@ export function VideoList({
     [getVideos, page, query],
   );
 
+  const handleClearSelection = useCallback(() => {
+    getVideos("", 1);
+    if (searchInputRef.current) {
+      searchInputRef.current.value = "";
+    }
+  }, [getVideos]);
+
   const isEmpty = !videos.length;
 
   return (
@@ -70,12 +78,22 @@ export function VideoList({
       </p>
       <div className="my-4">
         <label htmlFor={searchInputId}>Search videos</label>
-        <input
-          className="border border-gray-300 p-2 rounded-md my-2 w-full focus:outline-purple-700 focus:border-purple-500"
-          defaultValue={query}
-          id={searchInputId}
-          onChange={debouncedSearch}
-        />
+        <div className="flex justify-between">
+          <input
+            className="border border-gray-300 p-2 rounded-md mr-3 w-full focus:outline-purple-700 focus:border-purple-500"
+            defaultValue={query}
+            id={searchInputId}
+            onChange={debouncedSearch}
+            ref={searchInputRef}
+          />
+          <Button
+            disabled={!query}
+            onClick={handleClearSelection}
+            type="button"
+          >
+            Clear
+          </Button>
+        </div>
       </div>
       {isEmpty ? (
         <p className="text-center">❌ No videos available 🤷‍♂️</p>
