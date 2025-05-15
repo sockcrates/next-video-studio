@@ -1,7 +1,6 @@
 import { faker } from "@faker-js/faker";
 import { render } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import React from "react";
 import { byRole, byText } from "testing-library-selector";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { VideoList, type VideoListProps } from "./VideoList";

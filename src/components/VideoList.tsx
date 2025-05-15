@@ -5,7 +5,7 @@ import type { Video } from "@/lib/videos";
 import classNames from "classnames";
 import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import React, { type ChangeEvent, useCallback, useId, useRef } from "react";
+import { type ChangeEvent, useCallback, useId, useRef } from "react";
 
 export interface VideoListProps {
   pageCount: number;

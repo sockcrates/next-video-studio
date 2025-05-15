@@ -2,7 +2,7 @@
 import { Button } from "@/components/Button";
 import { useDebounce } from "@/hooks";
 import type { Video } from "@/lib";
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { TrimBar } from "./TrimBar";
 
 interface VideoTrimmerProps {
