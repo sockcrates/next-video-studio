@@ -3,7 +3,7 @@ import { render } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import React from "react";
 import { byRole, byText } from "testing-library-selector";
-import { describe, expect, it, vi } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import { VideoList, type VideoListProps } from "./VideoList";
 
 const mockSearchParams = new URLSearchParams();
@@ -40,11 +40,20 @@ function renderComponent(opts: Partial<VideoListProps> = {}) {
 const ui = {
   previousButton: byRole("button", { name: "Previous" }),
   emptyIndicator: byText(/No videos available/),
+  emptySearchResultsIndicator: byText(/No videos available for your search/),
   nextButton: byRole("button", { name: "Next" }),
   pageCounter: byText(/Page \d of \d/),
+  pageSelector: byRole("menu", { name: "Jump to page" }),
   searchBar: byRole("textbox", { name: "Search videos" }),
   videoList: byRole("complementary", { name: "Videos" }),
 };
+
+afterEach(() => {
+  vi.clearAllMocks();
+  for (const key of mockSearchParams.keys()) {
+    mockSearchParams.delete(key);
+  }
+});
 
 describe("VideoList", () => {
   it("renders with a list of videos", () => {
@@ -58,19 +67,24 @@ describe("VideoList", () => {
 
     expect(ui.emptyIndicator.get()).toBeVisible();
   });
-  it("doesn't render page switch ui if there are no pages", () => {
+  it("renders an empty search state", () => {
+    mockSearchParams.set("query", "rick astley");
+    renderComponent({ videos: [] });
+
+    expect(ui.emptySearchResultsIndicator.get()).toBeVisible();
+  });
+  it("disables render page switch ui if there are no pages", () => {
     renderComponent({ pageCount: 0 });
 
-    expect(ui.pageCounter.query()).not.toBeInTheDocument();
-    expect(ui.previousButton.query()).not.toBeInTheDocument();
-    expect(ui.nextButton.query()).not.toBeInTheDocument();
+    expect(ui.pageCounter.get()).toHaveTextContent("Page 1 of 1");
+    expect(ui.previousButton.get()).toBeDisabled();
+    expect(ui.nextButton.get()).toBeDisabled();
   });
-  it("doesn't render page switch ui if there is only one page", () => {
+  it("disables page switch ui if there is only one page", () => {
     renderComponent({ pageCount: 1 });
 
-    expect(ui.pageCounter.query()).not.toBeInTheDocument();
-    expect(ui.previousButton.query()).not.toBeInTheDocument();
-    expect(ui.nextButton.query()).not.toBeInTheDocument();
+    expect(ui.previousButton.get()).toBeDisabled();
+    expect(ui.nextButton.get()).toBeDisabled();
   });
   it("has buttons to switch pages", () => {
     renderComponent({ pageCount: 5 });

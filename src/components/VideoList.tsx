@@ -111,6 +111,8 @@ export function VideoList({
           </label>
           <select
             className="border border-gray-300 p-2 rounded-md focus:outline-purple-700 focus:border-purple-500"
+            disabled={pageCount <= 1}
+            defaultValue={page}
             id={pageSelectorId}
             onChange={handleJumpToPage}
           >
@@ -132,7 +134,7 @@ export function VideoList({
             Page {page} of {pageCount || 1}
           </span>
           <Button
-            disabled={page === pageCount}
+            disabled={page === pageCount || pageCount === 0}
             onClick={handleNextPageClick}
             type="button"
           >
@@ -141,7 +143,15 @@ export function VideoList({
         </div>
       </div>
       {isEmpty ? (
-        <output className="text-center">❌ No videos available </output>
+        <output>
+          {query ? (
+            <p className="text-center">
+              🔎 No videos available for your search
+            </p>
+          ) : (
+            <p className="text-center">❌ No videos available</p>
+          )}
+        </output>
       ) : (
         <ul>
           {videos.map((video) => (
