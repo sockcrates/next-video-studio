@@ -103,20 +103,49 @@ export function VideoTrimmer({ video }: VideoTrimmerProps) {
     [debouncedPersistTrimChange, video.id.videoId],
   );
 
+  const togglePlayPause = useCallback(() => {
+    if (isPlaying) {
+      videoRef.current?.pause();
+      setIsPlaying(false);
+    } else {
+      videoRef.current?.play();
+      setIsPlaying(true);
+    }
+  }, [isPlaying]);
+
   return (
-    <div>
-      <video ref={videoRef}>
-        <source src={video.id.videoId} type="video/mp4" />
-        <source src={video.id.videoId} type="video/webm" />
-        <track default kind="captions" src={video.id.videoId} srcLang="en" />
-      </video>
-      <Button>Play</Button>
-      <TrimBar
-        onTrimEndChange={handleTrimEndChange}
-        onTrimStartChange={handleTrimStartChange}
-        trimEnd={trimEnd}
-        trimStart={trimStart}
-      />
+    <div className="flex flex-col w-full h-full justify-center items-center">
+      <div className="max-w-[800px] max-h-[600px] w-full h-full mb-4">
+        <div className="w-full h-full bg-gray-200 rounded-lg overflow-hidden">
+          <video ref={videoRef}>
+            <source src={video.id.videoId} type="video/mp4" />
+            <source src={video.id.videoId} type="video/webm" />
+            <track
+              default
+              kind="captions"
+              src={video.id.videoId}
+              srcLang="en"
+            />
+          </video>
+        </div>
+        <div className="items-center flex mt-4 w-full">
+          <Button
+            className="mr-4"
+            disabled={!videoRef.current}
+            onClick={togglePlayPause}
+          >
+            {isPlaying ? "Pause" : "Play"}
+          </Button>
+          <div className="w-full h-full mb-2">
+            <TrimBar
+              onTrimEndChange={handleTrimEndChange}
+              onTrimStartChange={handleTrimStartChange}
+              trimEnd={trimEnd}
+              trimStart={trimStart}
+            />
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
