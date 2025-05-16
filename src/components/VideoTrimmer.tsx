@@ -108,8 +108,14 @@ export const VideoTrimmer = memo(({ video }: VideoTrimmerProps) => {
       videoRef.current?.pause();
       setIsPlaying(false);
     } else {
-      videoRef.current?.play();
-      setIsPlaying(true);
+      videoRef.current
+        ?.play()
+        .then(() => {
+          setIsPlaying(true);
+        })
+        .catch(() => {
+          setIsPlaying(false);
+        });
     }
   }, [isPlaying]);
 
