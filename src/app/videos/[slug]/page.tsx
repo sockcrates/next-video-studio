@@ -40,9 +40,9 @@ export default async function VideoTrimmerPage(props: {
           />
         </Suspense>
       </div>
-      <div className="p-8 max-h-150 w-full order-1 md:order-2">
+      <main className="p-8 max-h-150 w-full order-1 md:order-2">
         <VideoTrimmer video={video} />
-      </div>
+      </main>
     </div>
   );
 }

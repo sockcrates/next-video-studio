@@ -79,10 +79,10 @@ export const VideoList = memo(
 
     return (
       <aside aria-labelledby={headingId}>
-        <p className="text-center text-4xl my-4" id={headingId}>
+        <p className="text-center text-4xl mb-4" id={headingId}>
           Videos
         </p>
-        <Paper className="my-6 bg-purple-300 dark:bg-purple-900 sticky shadow-xl top-[-16px]">
+        <Paper className="mb-6 bg-purple-300 dark:bg-purple-900 sticky shadow-xl top-[-16px]">
           <label className="text-lg" htmlFor={searchInputId}>
             Search videos
           </label>
