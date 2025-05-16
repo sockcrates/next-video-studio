@@ -28,7 +28,7 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <header className="flex items-center bg-purple-900 p-4 text-4xl">
+        <header className="flex items-center bg-purple-300 dark:bg-purple-900 p-4 text-4xl">
           Video Studio
           <Navbar />
         </header>
