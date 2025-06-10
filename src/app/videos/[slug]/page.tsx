@@ -19,15 +19,28 @@ export default async function VideoTrimmerPage(props: {
     props.searchParams,
   ]);
 
-  const video = await getVideoById(params.slug);
-  if (!video) {
+  let video = null;
+  try {
+    video = await getVideoById(params.slug);
+    if (!video) {
+      redirect("/videos");
+    }
+  } catch (_error) {
     redirect("/videos");
   }
 
   const page = Number.parseInt(searchParams?.page ?? "1");
   const query = searchParams?.query ?? "";
 
-  const { pageCount, videos } = await getVideos({ page, query });
+  let pageCount = 0;
+  let videos = [];
+  try {
+    const res = await getVideos({ page, query });
+    pageCount = res.pageCount;
+    videos = res.videos;
+  } catch (_error) {
+    redirect("/videos");
+  }
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-[40%_60%] h-full w-full">
