@@ -92,28 +92,29 @@ export const VideoTrimmer = memo(({ video }: VideoTrimmerProps) => {
 		localStorage.setItem(key, value.toString());
 	}, []);
 
-	const debouncedPersistTrimChange = useDebounce(persistTrimChange, 500);
+	const debouncedPersistTrimStart = useDebounce(persistTrimChange, 500);
+	const debouncedPersistTrimEnd = useDebounce(persistTrimChange, 500);
 
 	const handleTrimStartChange = useCallback(
 		(newTrimStart: number) => {
 			setTrimStart(newTrimStart);
-			debouncedPersistTrimChange(
+			debouncedPersistTrimStart(
 				`next-video-studio:video-trim-start:${video.id.videoId}`,
 				newTrimStart,
 			);
 		},
-		[debouncedPersistTrimChange, video.id.videoId],
+		[debouncedPersistTrimStart, video.id.videoId],
 	);
 
 	const handleTrimEndChange = useCallback(
 		(newTrimEnd: number) => {
 			setTrimEnd(newTrimEnd);
-			debouncedPersistTrimChange(
+			debouncedPersistTrimEnd(
 				`next-video-studio:video-trim-end:${video.id.videoId}`,
 				newTrimEnd,
 			);
 		},
-		[debouncedPersistTrimChange, video.id.videoId],
+		[debouncedPersistTrimEnd, video.id.videoId],
 	);
 
 	const togglePlayPause = useCallback(() => {
