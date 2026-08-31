@@ -122,8 +122,19 @@ export const VideoTrimmer = memo(({ video }: VideoTrimmerProps) => {
 			videoRef.current?.pause();
 			setIsPlaying(false);
 		} else {
-			videoRef.current
-				?.play()
+			const videoElement = videoRef.current;
+			if (!videoElement) {
+				return;
+			}
+
+			const trimmedStartTime = videoDuration * (trimStart / 100);
+			const trimmedEndTime = videoDuration * (trimEnd / 100);
+			if (videoElement.currentTime >= trimmedEndTime) {
+				videoElement.currentTime = trimmedStartTime;
+			}
+
+			videoElement
+				.play()
 				.then(() => {
 					setIsPlaying(true);
 				})
@@ -131,7 +142,7 @@ export const VideoTrimmer = memo(({ video }: VideoTrimmerProps) => {
 					setIsPlaying(false);
 				});
 		}
-	}, [isPlaying]);
+	}, [isPlaying, trimEnd, trimStart, videoDuration]);
 
 	return (
 		<div className="flex flex-col w-full h-full justify-center items-center">
