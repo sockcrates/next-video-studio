@@ -23,7 +23,11 @@ export const VideoList = memo(
 		const router = useRouter();
 		const searchParams = useSearchParams();
 
-		const page = Number.parseInt(searchParams.get("page") ?? "1", 10);
+		const requestedPage = Number.parseInt(searchParams.get("page") ?? "1", 10);
+		const page = Math.min(
+			Math.max(Number.isFinite(requestedPage) ? requestedPage : 1, 1),
+			Math.max(pageCount, 1),
+		);
 		const query = searchParams.get("query") ?? "";
 
 		const getVideos = useCallback(
@@ -61,11 +65,12 @@ export const VideoList = memo(
 		);
 
 		const handleClearSelection = useCallback(() => {
+			debouncedSearch.cancel();
 			getVideos("", 1);
 			if (searchInputRef.current) {
 				searchInputRef.current.value = "";
 			}
-		}, [getVideos]);
+		}, [debouncedSearch, getVideos]);
 
 		const handleJumpToPage = useCallback(
 			(e: ChangeEvent<HTMLSelectElement>) => {
@@ -171,6 +176,7 @@ export const VideoList = memo(
 								>
 									<Link
 										href={`/videos/${video.id.videoId}?${searchParams.toString()}`}
+										onClick={debouncedSearch.cancel}
 										shallow
 									>
 										<p className="text-l font-bold line-clamp-2 text-ellipsis">

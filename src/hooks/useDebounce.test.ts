@@ -70,4 +70,24 @@ describe("useDebounce", () => {
 		expect(cb2).toHaveBeenCalledTimes(1);
 		expect(cb2).toHaveBeenCalledWith("y");
 	});
+	it("cancels a pending callback explicitly and when unmounted", () => {
+		const callback = vi.fn();
+		const { result, unmount } = renderHook(() => useDebounce(callback, 50));
+
+		act(() => {
+			result.current("cancelled");
+			result.current.cancel();
+			vi.advanceTimersByTime(50);
+		});
+
+		expect(callback).not.toHaveBeenCalled();
+
+		act(() => {
+			result.current("unmounted");
+			unmount();
+			vi.advanceTimersByTime(50);
+		});
+
+		expect(callback).not.toHaveBeenCalled();
+	});
 });
