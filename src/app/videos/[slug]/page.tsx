@@ -29,12 +29,19 @@ export default async function VideoTrimmerPage(props: {
 		redirect("/videos");
 	}
 
-	const page = Number.parseInt(searchParams?.page ?? "1", 10);
+	const requestedPage = Number.parseInt(searchParams?.page ?? "1", 10);
 	const query = searchParams?.query ?? "";
 
 	let pageCount = 0;
+	let page = 1;
 	let videos = [];
 	try {
+		const allResults = await getVideos({ page: 1, query });
+		pageCount = allResults.pageCount;
+		page = Math.min(
+			Math.max(Number.isFinite(requestedPage) ? requestedPage : 1, 1),
+			Math.max(pageCount, 1),
+		);
 		const res = await getVideos({ page, query });
 		pageCount = res.pageCount;
 		videos = res.videos;
