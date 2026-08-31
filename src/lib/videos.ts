@@ -1,4 +1,4 @@
-import data from "./data.json" assert { type: "json" };
+import data from "./data.json" with { type: "json" };
 
 const DEFAULT_PAGE_SIZE = 10;
 
