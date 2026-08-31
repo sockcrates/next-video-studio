@@ -1,36 +1,80 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Next Video Studio
 
-## Getting Started
+A Next.js demo project for browsing a video catalogue and setting a playback
+trim range. It is a UI and interaction demo—not a video upload, rendering, or
+export service.
 
-First, run the development server:
+## Features
+
+- Browse a bundled catalogue at `/videos`, search titles, and paginate results.
+- Select an item to open the editor at `/videos/[slug]`.
+- Play or pause a preview and set start/end trim points with pointer or
+keyboard controls.
+- Store trim positions per video in the browser's `localStorage`.
+
+The catalogue is checked-in fixture data shaped like YouTube search results.
+Since a YouTube ID is not a directly playable media file, every selected item
+uses the same public MP4 sample for its preview. The app does not upload media,
+play YouTube videos, persist data on a server, or export video.
+
+## Requirements
+
+[Mise](https://mise.jdx.dev/) manages the required Node.js and pnpm versions.
+Install Mise, then let this repository provision its tools:
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+mise install
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Getting started
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+pnpm install
+pnpm dev
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Open [http://localhost:3000](http://localhost:3000). No environment variables,
+API keys, database, or backend setup are required.
 
-## Learn More
+## Scripts
 
-To learn more about Next.js, take a look at the following resources:
+| Command | Purpose |
+| --- | --- |
+| `pnpm dev` | Start the development server with Turbopack. |
+| `pnpm build` | Create a production build. |
+| `pnpm start` | Serve the production build. |
+| `pnpm test` | Run the Vitest test suite. |
+| `pnpm lint` | Run Biome checks. |
+| `pnpm typecheck` | Check TypeScript without emitting files. |
+| `pnpm check` | Run linting, type-checking, tests, and a production build. |
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Project structure
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```text
+src/
+├── app/          # App Router pages and layouts
+├── components/   # Video list, trimmer, trim controls, and shared UI
+├── hooks/        # Client-side utilities such as useDebounce
+└── lib/          # Bundled catalogue data and lookup/pagination helpers
+```
 
-## Deploy on Vercel
+The catalogue lives in `src/lib/data.json`. `src/lib/videos.ts` filters and
+paginates it, while `src/components/VideoTrimmer.tsx` manages preview playback
+and locally saved trim positions.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Current limitations
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- The preview is one remote sample MP4, not the selected catalogue entry.
+- Trim values are percentages and only affect preview playback.
+- Trim state is stored locally in the browser; it is not shared or saved to a
+server.
+- There is no ingestion pipeline, authentication, media processing, or video
+export.
+
+The remote preview asset requires an internet connection; the catalogue itself
+is local.
+
+## License
+
+This project is licensed under the [GNU General Public License v3.0](LICENSE).
+
