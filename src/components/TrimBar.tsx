@@ -73,15 +73,47 @@ export const TrimBar = memo(
 			[handleMouseMove, handleMouseUp],
 		);
 
+		const handleKeyDown = useCallback(
+			(e: React.KeyboardEvent<HTMLDivElement>, isStart: boolean) => {
+				const minimum = isStart ? 0 : trimStart + 2;
+				const maximum = isStart ? trimEnd - 2 : 100;
+				const value = isStart ? trimStart : trimEnd;
+				let nextValue: number | undefined;
+
+				switch (e.key) {
+					case "ArrowDown":
+					case "ArrowLeft":
+						nextValue = Math.max(minimum, value - 1);
+						break;
+					case "ArrowRight":
+					case "ArrowUp":
+						nextValue = Math.min(maximum, value + 1);
+						break;
+					case "Home":
+						nextValue = minimum;
+						break;
+					case "End":
+						nextValue = maximum;
+						break;
+					default:
+						return;
+				}
+
+				e.preventDefault();
+				if (isStart) {
+					onTrimStartChange(nextValue);
+				} else {
+					onTrimEndChange(nextValue);
+				}
+			},
+			[onTrimEndChange, onTrimStartChange, trimEnd, trimStart],
+		);
+
 		return (
 			<div className="w-full min-w-48 min-h-10">
 				<div ref={trimBarRef} className="relative h-10 mt-4">
-					<div
-						aria-hidden
-						className="absolute w-full h-8 bg-gray-300 rounded-md"
-					>
+					<div className="absolute w-full h-8 bg-gray-300 rounded-md">
 						<div
-							aria-hidden
 							className="absolute h-full bg-gray-500 rounded-md"
 							style={{
 								left: `${trimStart}%`,
@@ -94,6 +126,7 @@ export const TrimBar = memo(
 								aria-valuemax={100}
 								aria-valuenow={trimStart}
 								className="absolute left-0 top-0 w-2 h-full bg-orange-500 rounded-l-md cursor-ew-resize"
+								onKeyDown={(e) => handleKeyDown(e, true)}
 								onMouseDown={(e) => handleMouseDown(e, true)}
 								role="slider"
 								tabIndex={0}
@@ -104,6 +137,7 @@ export const TrimBar = memo(
 								aria-valuemax={100}
 								aria-valuenow={trimEnd}
 								className="absolute right-0 top-0 w-2 h-full bg-orange-500 rounded-r-md cursor-ew-resize"
+								onKeyDown={(e) => handleKeyDown(e, false)}
 								onMouseDown={(e) => handleMouseDown(e, false)}
 								role="slider"
 								tabIndex={0}
