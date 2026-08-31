@@ -47,6 +47,10 @@ export const VideoTrimmer = memo(({ video }: VideoTrimmerProps) => {
 	}, [video.id.videoId]);
 
 	useEffect(() => {
+		if (!video.id.videoId) {
+			return;
+		}
+
 		const videoElement = videoRef.current;
 
 		const handleLoadMetadata = () => {
