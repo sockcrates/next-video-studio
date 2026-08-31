@@ -1,8 +1,8 @@
 "use client";
+import { memo, useCallback, useEffect, useRef, useState } from "react";
 import { Button } from "@/components/Button";
 import { useDebounce } from "@/hooks";
 import type { Video } from "@/lib";
-import { memo, useCallback, useEffect, useRef, useState } from "react";
 import { TrimBar } from "./TrimBar";
 
 interface VideoTrimmerProps {

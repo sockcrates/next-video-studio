@@ -1,7 +1,7 @@
+import { Suspense } from "react";
 import { VideoList } from "@/components";
 import { VideoListSkeleton } from "@/components/VideoListSkeleton";
 import { getVideos } from "@/lib";
-import { Suspense } from "react";
 
 export default async function VideoListPage(props: {
 	searchParams: Promise<
@@ -12,7 +12,7 @@ export default async function VideoListPage(props: {
 	>;
 }) {
 	const searchParams = await props.searchParams;
-	const page = Number.parseInt(searchParams?.page ?? "1");
+	const page = Number.parseInt(searchParams?.page ?? "1", 10);
 	const query = searchParams?.query ?? "";
 
 	let pageCount = 0;

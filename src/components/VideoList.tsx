@@ -1,11 +1,11 @@
 "use client";
-import { Button, Paper } from "@/components";
-import { useDebounce } from "@/hooks";
-import type { Video } from "@/lib/videos";
 import classNames from "classnames";
 import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { type ChangeEvent, memo, useCallback, useId, useRef } from "react";
+import { Button, Paper } from "@/components";
+import { useDebounce } from "@/hooks";
+import type { Video } from "@/lib/videos";
 
 export interface VideoListProps {
 	pageCount: number;
@@ -23,7 +23,7 @@ export const VideoList = memo(
 		const router = useRouter();
 		const searchParams = useSearchParams();
 
-		const page = Number.parseInt(searchParams.get("page") ?? "1");
+		const page = Number.parseInt(searchParams.get("page") ?? "1", 10);
 		const query = searchParams.get("query") ?? "";
 
 		const getVideos = useCallback(
@@ -69,7 +69,7 @@ export const VideoList = memo(
 
 		const handleJumpToPage = useCallback(
 			(e: ChangeEvent<HTMLSelectElement>) => {
-				const newPage = Number.parseInt(e.target.value);
+				const newPage = Number.parseInt(e.target.value, 10);
 				getVideos(query, newPage);
 			},
 			[getVideos, query],

@@ -1,9 +1,9 @@
+import { redirect } from "next/navigation";
+import { Suspense } from "react";
 import { VideoList } from "@/components";
 import { VideoListSkeleton } from "@/components/VideoListSkeleton";
 import { VideoTrimmer } from "@/components/VideoTrimmer";
 import { getVideoById, getVideos } from "@/lib";
-import { redirect } from "next/navigation";
-import { Suspense } from "react";
 
 export default async function VideoTrimmerPage(props: {
 	params: Promise<{ slug: string }>;
@@ -29,7 +29,7 @@ export default async function VideoTrimmerPage(props: {
 		redirect("/videos");
 	}
 
-	const page = Number.parseInt(searchParams?.page ?? "1");
+	const page = Number.parseInt(searchParams?.page ?? "1", 10);
 	const query = searchParams?.query ?? "";
 
 	let pageCount = 0;
