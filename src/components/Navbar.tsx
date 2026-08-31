@@ -11,7 +11,7 @@ enum Routes {
 
 export function Navbar() {
 	const pathname = usePathname();
-	const videoEditorSlug = new RegExp(`${Routes.VIDEO_EDITOR}(/\\w+)?$`);
+	const videoEditorSlug = new RegExp(`${Routes.VIDEO_EDITOR}(/[^/]+)?$`);
 	const isVideoEditorPage = videoEditorSlug.test(pathname);
 	return (
 		<nav className="flex gap-5 w-fit p-4">
