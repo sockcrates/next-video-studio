@@ -6,8 +6,10 @@
 		"dev": "next dev --turbopack",
 		"build": "next build",
 		"start": "next start",
-		"test": "vitest",
-		"lint": "next lint"
+		"test": "vitest run",
+		"lint": "biome ci .",
+		"typecheck": "tsc --noEmit --incremental false",
+		"check": "pnpm run lint && pnpm run typecheck && pnpm test && pnpm run build"
 	},
 	"dependencies": {
 		"classnames": "^2.5.1",
