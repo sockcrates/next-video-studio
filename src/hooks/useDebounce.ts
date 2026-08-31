@@ -32,6 +32,5 @@ export function useDebounce<Args extends unknown[], Return>(
 		[cancel, delay],
 	);
 
-	debouncedCallback.cancel = cancel;
-	return debouncedCallback;
+	return Object.assign(debouncedCallback, { cancel });
 }
