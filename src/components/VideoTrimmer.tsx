@@ -9,6 +9,12 @@ interface VideoTrimmerProps {
 	video: Video;
 }
 
+// YouTube IDs identify pages in YouTube's player, rather than MP4 or WebM
+// files that an HTMLVideoElement can decode. Until the application has a media
+// ingestion service, use a known playable asset for the editor preview.
+const EDITOR_PREVIEW_MEDIA_URL =
+	"https://storage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4";
+
 export const VideoTrimmer = memo(({ video }: VideoTrimmerProps) => {
 	const videoRef = useRef<HTMLVideoElement>(null);
 
@@ -18,18 +24,25 @@ export const VideoTrimmer = memo(({ video }: VideoTrimmerProps) => {
 	const [videoDuration, setVideoDuration] = useState(0);
 
 	useEffect(() => {
+		setIsPlaying(false);
+		setVideoDuration(0);
+		setTrimStart(0);
+		setTrimEnd(100);
+
 		const savedTrimStart = localStorage.getItem(
 			`next-video-studio:video-trim-start:${video.id.videoId}`,
 		);
-		if (savedTrimStart) {
-			setTrimStart(Number.parseFloat(savedTrimStart));
+		const parsedTrimStart = Number.parseFloat(savedTrimStart ?? "");
+		if (Number.isFinite(parsedTrimStart)) {
+			setTrimStart(Math.min(98, Math.max(0, parsedTrimStart)));
 		}
 
 		const savedTrimEnd = localStorage.getItem(
 			`next-video-studio:video-trim-end:${video.id.videoId}`,
 		);
-		if (savedTrimEnd) {
-			setTrimEnd(Number.parseFloat(savedTrimEnd));
+		const parsedTrimEnd = Number.parseFloat(savedTrimEnd ?? "");
+		if (Number.isFinite(parsedTrimEnd)) {
+			setTrimEnd(Math.min(100, Math.max(2, parsedTrimEnd)));
 		}
 	}, [video.id.videoId]);
 
@@ -123,13 +136,12 @@ export const VideoTrimmer = memo(({ video }: VideoTrimmerProps) => {
 		<div className="flex flex-col w-full h-full justify-center items-center">
 			<div className="max-w-[1200px] max-h-[1000px] w-full h-full mb-4">
 				<div className="aspect-video bg-gray-200 rounded-lg overflow-hidden">
-					<video ref={videoRef}>
-						<source src={video.id.videoId} type="video/mp4" />
-						<source src={video.id.videoId} type="video/webm" />
+					<video key={video.id.videoId} ref={videoRef}>
+						<source src={EDITOR_PREVIEW_MEDIA_URL} type="video/mp4" />
 						<track
 							default
 							kind="captions"
-							src={video.id.videoId}
+							src="data:text/vtt,WEBVTT%0A%0A"
 							srcLang="en"
 						/>
 					</video>
