@@ -20,15 +20,18 @@ export const TrimBar = memo(
 		const dragStateRef = useRef<{
 			isDraggingEnd: boolean;
 			isDraggingStart: boolean;
+			pointerId: number | null;
 		}>({
 			isDraggingEnd: false,
 			isDraggingStart: false,
+			pointerId: null,
 		});
 
-		const handleMouseMove = useCallback(
-			(e: MouseEvent) => {
-				const { isDraggingStart, isDraggingEnd } = dragStateRef.current;
-				if (!isDraggingStart && !isDraggingEnd) {
+		const handlePointerMove = useCallback(
+			(e: React.PointerEvent<HTMLDivElement>) => {
+				const { isDraggingStart, isDraggingEnd, pointerId } =
+					dragStateRef.current;
+				if ((!isDraggingStart && !isDraggingEnd) || pointerId !== e.pointerId) {
 					return;
 				}
 
@@ -51,26 +54,43 @@ export const TrimBar = memo(
 			[onTrimEndChange, onTrimStartChange, trimEnd, trimStart],
 		);
 
-		const handleMouseUp = useCallback(() => {
+		const stopDragging = useCallback(() => {
 			dragStateRef.current = {
 				isDraggingStart: false,
 				isDraggingEnd: false,
+				pointerId: null,
 			};
-			document.removeEventListener("mousemove", handleMouseMove);
-			document.removeEventListener("mouseup", handleMouseUp);
-		}, [handleMouseMove]);
+		}, []);
 
-		const handleMouseDown = useCallback(
-			(e: React.MouseEvent<HTMLDivElement, MouseEvent>, isStart: boolean) => {
+		const handlePointerDown = useCallback(
+			(e: React.PointerEvent<HTMLDivElement>, isStart: boolean) => {
+				if (!e.isPrimary || e.button !== 0) {
+					return;
+				}
+
 				e.preventDefault();
 				dragStateRef.current = {
 					isDraggingStart: isStart,
 					isDraggingEnd: !isStart,
+					pointerId: e.pointerId,
 				};
-				document.addEventListener("mousemove", handleMouseMove);
-				document.addEventListener("mouseup", handleMouseUp);
+				e.currentTarget.setPointerCapture(e.pointerId);
 			},
-			[handleMouseMove, handleMouseUp],
+			[],
+		);
+
+		const handlePointerUp = useCallback(
+			(e: React.PointerEvent<HTMLDivElement>) => {
+				if (dragStateRef.current.pointerId !== e.pointerId) {
+					return;
+				}
+
+				if (e.currentTarget.hasPointerCapture(e.pointerId)) {
+					e.currentTarget.releasePointerCapture(e.pointerId);
+				}
+				stopDragging();
+			},
+			[stopDragging],
 		);
 
 		const handleKeyDown = useCallback(
@@ -123,22 +143,30 @@ export const TrimBar = memo(
 							<div
 								aria-label="Start trim position"
 								aria-valuemin={0}
-								aria-valuemax={100}
+								aria-valuemax={trimEnd - 2}
 								aria-valuenow={trimStart}
-								className="absolute left-0 top-0 w-2 h-full bg-orange-500 rounded-l-md cursor-ew-resize"
+								className="absolute left-0 top-0 w-2 h-full bg-orange-500 rounded-l-md cursor-ew-resize touch-none"
 								onKeyDown={(e) => handleKeyDown(e, true)}
-								onMouseDown={(e) => handleMouseDown(e, true)}
+								onLostPointerCapture={stopDragging}
+								onPointerCancel={handlePointerUp}
+								onPointerDown={(e) => handlePointerDown(e, true)}
+								onPointerMove={handlePointerMove}
+								onPointerUp={handlePointerUp}
 								role="slider"
 								tabIndex={0}
 							/>
 							<div
 								aria-label="End trim position"
-								aria-valuemin={0}
+								aria-valuemin={trimStart + 2}
 								aria-valuemax={100}
 								aria-valuenow={trimEnd}
-								className="absolute right-0 top-0 w-2 h-full bg-orange-500 rounded-r-md cursor-ew-resize"
+								className="absolute right-0 top-0 w-2 h-full bg-orange-500 rounded-r-md cursor-ew-resize touch-none"
 								onKeyDown={(e) => handleKeyDown(e, false)}
-								onMouseDown={(e) => handleMouseDown(e, false)}
+								onLostPointerCapture={stopDragging}
+								onPointerCancel={handlePointerUp}
+								onPointerDown={(e) => handlePointerDown(e, false)}
+								onPointerMove={handlePointerMove}
+								onPointerUp={handlePointerUp}
 								role="slider"
 								tabIndex={0}
 							/>
