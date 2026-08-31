@@ -59,7 +59,7 @@ export const VideoTrimmer = memo(({ video }: VideoTrimmerProps) => {
 			return () =>
 				videoElement.removeEventListener("loadedmetadata", handleLoadMetadata);
 		}
-	}, []);
+	}, [video.id.videoId]);
 
 	useEffect(() => {
 		const videoElement = videoRef.current;
