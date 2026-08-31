@@ -6,153 +6,153 @@ import { memo, useCallback, useEffect, useRef, useState } from "react";
 import { TrimBar } from "./TrimBar";
 
 interface VideoTrimmerProps {
-  video: Video;
+	video: Video;
 }
 
 export const VideoTrimmer = memo(({ video }: VideoTrimmerProps) => {
-  const videoRef = useRef<HTMLVideoElement>(null);
+	const videoRef = useRef<HTMLVideoElement>(null);
 
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [trimStart, setTrimStart] = useState(0);
-  const [trimEnd, setTrimEnd] = useState(100);
-  const [videoDuration, setVideoDuration] = useState(0);
+	const [isPlaying, setIsPlaying] = useState(false);
+	const [trimStart, setTrimStart] = useState(0);
+	const [trimEnd, setTrimEnd] = useState(100);
+	const [videoDuration, setVideoDuration] = useState(0);
 
-  useEffect(() => {
-    const savedTrimStart = localStorage.getItem(
-      `next-video-studio:video-trim-start:${video.id.videoId}`,
-    );
-    if (savedTrimStart) {
-      setTrimStart(Number.parseFloat(savedTrimStart));
-    }
+	useEffect(() => {
+		const savedTrimStart = localStorage.getItem(
+			`next-video-studio:video-trim-start:${video.id.videoId}`,
+		);
+		if (savedTrimStart) {
+			setTrimStart(Number.parseFloat(savedTrimStart));
+		}
 
-    const savedTrimEnd = localStorage.getItem(
-      `next-video-studio:video-trim-end:${video.id.videoId}`,
-    );
-    if (savedTrimEnd) {
-      setTrimEnd(Number.parseFloat(savedTrimEnd));
-    }
-  }, [video.id.videoId]);
+		const savedTrimEnd = localStorage.getItem(
+			`next-video-studio:video-trim-end:${video.id.videoId}`,
+		);
+		if (savedTrimEnd) {
+			setTrimEnd(Number.parseFloat(savedTrimEnd));
+		}
+	}, [video.id.videoId]);
 
-  useEffect(() => {
-    const videoElement = videoRef.current;
+	useEffect(() => {
+		const videoElement = videoRef.current;
 
-    const handleLoadMetadata = () => {
-      setVideoDuration(videoElement?.duration ?? 0);
-    };
+		const handleLoadMetadata = () => {
+			setVideoDuration(videoElement?.duration ?? 0);
+		};
 
-    if (videoElement) {
-      videoElement.addEventListener("loadedmetadata", handleLoadMetadata);
+		if (videoElement) {
+			videoElement.addEventListener("loadedmetadata", handleLoadMetadata);
 
-      return () =>
-        videoElement.removeEventListener("loadedmetadata", handleLoadMetadata);
-    }
-  }, []);
+			return () =>
+				videoElement.removeEventListener("loadedmetadata", handleLoadMetadata);
+		}
+	}, []);
 
-  useEffect(() => {
-    const videoElement = videoRef.current;
-    if (!videoElement) {
-      return;
-    }
+	useEffect(() => {
+		const videoElement = videoRef.current;
+		if (!videoElement) {
+			return;
+		}
 
-    const trimmedStartTime = videoDuration * (trimStart / 100);
-    const trimmedEndTime = videoDuration * (trimEnd / 100);
+		const trimmedStartTime = videoDuration * (trimStart / 100);
+		const trimmedEndTime = videoDuration * (trimEnd / 100);
 
-    const handleTimeUpdate = () => {
-      if (videoElement.currentTime < trimmedStartTime) {
-        videoElement.currentTime = trimmedStartTime;
-      } else if (videoElement.currentTime > trimmedEndTime) {
-        videoElement.currentTime = trimmedEndTime;
-        if (isPlaying) {
-          videoElement.pause();
-          setIsPlaying(false);
-        }
-      }
-    };
+		const handleTimeUpdate = () => {
+			if (videoElement.currentTime < trimmedStartTime) {
+				videoElement.currentTime = trimmedStartTime;
+			} else if (videoElement.currentTime > trimmedEndTime) {
+				videoElement.currentTime = trimmedEndTime;
+				if (isPlaying) {
+					videoElement.pause();
+					setIsPlaying(false);
+				}
+			}
+		};
 
-    videoElement.addEventListener("timeupdate", handleTimeUpdate);
+		videoElement.addEventListener("timeupdate", handleTimeUpdate);
 
-    return () =>
-      videoElement.removeEventListener("timeupdate", handleTimeUpdate);
-  }, [isPlaying, trimEnd, trimStart, videoDuration]);
+		return () =>
+			videoElement.removeEventListener("timeupdate", handleTimeUpdate);
+	}, [isPlaying, trimEnd, trimStart, videoDuration]);
 
-  const persistTrimChange = useCallback((key: string, value: number) => {
-    localStorage.setItem(key, value.toString());
-  }, []);
+	const persistTrimChange = useCallback((key: string, value: number) => {
+		localStorage.setItem(key, value.toString());
+	}, []);
 
-  const debouncedPersistTrimChange = useDebounce(persistTrimChange, 500);
+	const debouncedPersistTrimChange = useDebounce(persistTrimChange, 500);
 
-  const handleTrimStartChange = useCallback(
-    (newTrimStart: number) => {
-      setTrimStart(newTrimStart);
-      debouncedPersistTrimChange(
-        `next-video-studio:video-trim-start:${video.id.videoId}`,
-        newTrimStart,
-      );
-    },
-    [debouncedPersistTrimChange, video.id.videoId],
-  );
+	const handleTrimStartChange = useCallback(
+		(newTrimStart: number) => {
+			setTrimStart(newTrimStart);
+			debouncedPersistTrimChange(
+				`next-video-studio:video-trim-start:${video.id.videoId}`,
+				newTrimStart,
+			);
+		},
+		[debouncedPersistTrimChange, video.id.videoId],
+	);
 
-  const handleTrimEndChange = useCallback(
-    (newTrimEnd: number) => {
-      setTrimEnd(newTrimEnd);
-      debouncedPersistTrimChange(
-        `next-video-studio:video-trim-end:${video.id.videoId}`,
-        newTrimEnd,
-      );
-    },
-    [debouncedPersistTrimChange, video.id.videoId],
-  );
+	const handleTrimEndChange = useCallback(
+		(newTrimEnd: number) => {
+			setTrimEnd(newTrimEnd);
+			debouncedPersistTrimChange(
+				`next-video-studio:video-trim-end:${video.id.videoId}`,
+				newTrimEnd,
+			);
+		},
+		[debouncedPersistTrimChange, video.id.videoId],
+	);
 
-  const togglePlayPause = useCallback(() => {
-    if (isPlaying) {
-      videoRef.current?.pause();
-      setIsPlaying(false);
-    } else {
-      videoRef.current
-        ?.play()
-        .then(() => {
-          setIsPlaying(true);
-        })
-        .catch(() => {
-          setIsPlaying(false);
-        });
-    }
-  }, [isPlaying]);
+	const togglePlayPause = useCallback(() => {
+		if (isPlaying) {
+			videoRef.current?.pause();
+			setIsPlaying(false);
+		} else {
+			videoRef.current
+				?.play()
+				.then(() => {
+					setIsPlaying(true);
+				})
+				.catch(() => {
+					setIsPlaying(false);
+				});
+		}
+	}, [isPlaying]);
 
-  return (
-    <div className="flex flex-col w-full h-full justify-center items-center">
-      <div className="max-w-[1200px] max-h-[1000px] w-full h-full mb-4">
-        <div className="aspect-video bg-gray-200 rounded-lg overflow-hidden">
-          <video ref={videoRef}>
-            <source src={video.id.videoId} type="video/mp4" />
-            <source src={video.id.videoId} type="video/webm" />
-            <track
-              default
-              kind="captions"
-              src={video.id.videoId}
-              srcLang="en"
-            />
-          </video>
-        </div>
-        <div className="items-center flex mt-4 w-full">
-          <Button
-            className="mr-4"
-            disabled={!videoRef.current}
-            onClick={togglePlayPause}
-            type="button"
-          >
-            {isPlaying ? "Pause" : "Play"}
-          </Button>
-          <div className="w-full h-full mb-2">
-            <TrimBar
-              onTrimEndChange={handleTrimEndChange}
-              onTrimStartChange={handleTrimStartChange}
-              trimEnd={trimEnd}
-              trimStart={trimStart}
-            />
-          </div>
-        </div>
-      </div>
-    </div>
-  );
+	return (
+		<div className="flex flex-col w-full h-full justify-center items-center">
+			<div className="max-w-[1200px] max-h-[1000px] w-full h-full mb-4">
+				<div className="aspect-video bg-gray-200 rounded-lg overflow-hidden">
+					<video ref={videoRef}>
+						<source src={video.id.videoId} type="video/mp4" />
+						<source src={video.id.videoId} type="video/webm" />
+						<track
+							default
+							kind="captions"
+							src={video.id.videoId}
+							srcLang="en"
+						/>
+					</video>
+				</div>
+				<div className="items-center flex mt-4 w-full">
+					<Button
+						className="mr-4"
+						disabled={!videoRef.current}
+						onClick={togglePlayPause}
+						type="button"
+					>
+						{isPlaying ? "Pause" : "Play"}
+					</Button>
+					<div className="w-full h-full mb-2">
+						<TrimBar
+							onTrimEndChange={handleTrimEndChange}
+							onTrimStartChange={handleTrimStartChange}
+							trimEnd={trimEnd}
+							trimStart={trimStart}
+						/>
+					</div>
+				</div>
+			</div>
+		</div>
+	);
 });
